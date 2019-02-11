@@ -1,7 +1,7 @@
-FROM ubuntu:latest
+FROM ubuntu:18.04
 
-LABEL maintainer="Landon Abney <landonabney@gmail.com>"
-LABEL description="An image to run Atom packages in for CI builds."
+LABEL maintainer="David Wilson <daviwil@github.com>"
+LABEL description="An image to run Atom CI and release builds on Linux"
 
 ENV LANG="C.UTF-8" DISPLAY=":99"
 
@@ -19,9 +19,6 @@ COPY xvfb_start.sh /usr/local/bin/xvfb_start
 RUN chmod 0655 /usr/local/bin/xvfb_start
 ENTRYPOINT ["/usr/local/bin/xvfb_start"]
 
-# Set the Atom version and paths to executables
-ENV ATOM_VERSION=v1.31.0-beta1 ATOM_SCRIPT_PATH=atom-beta APM_SCRIPT_PATH=apm-beta
-
 # Install dependencies
 RUN apt-get update && \
     apt-get install --assume-yes --quiet \
@@ -30,6 +27,8 @@ RUN apt-get update && \
       ssh \
       tar \
       gzip \
+      gnupg \
+      rpm \
       ca-certificates \
       \
       build-essential \
@@ -40,21 +39,21 @@ RUN apt-get update && \
       libxss1 \
       libasound2 \
       libgtk-3-0 \
+      libx11-dev \
+      libxkbfile-dev \
+      xz-utils \
+      xorriso \
+      zsync \
+      libxss1 \
+      libgconf2-4 \
+      libxtst6 \
       \
       sudo \
       curl \
       && \
     \
-    curl --silent --location \
-      "https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-amd64.deb" \
-      --header 'Accept: application/octet-stream' \
-      --output "/tmp/atom-amd64.deb" && \
-    dpkg --unpack "/tmp/atom-amd64.deb" && \
-    apt-get install --fix-broken \
-      --assume-yes --quiet --no-install-suggests --no-install-recommends && \
-    \
     apt-get clean && \
-    rm --force /tmp/atom-amd64.deb && \
     rm --recursive --force /var/lib/apt/lists/*
 
-USER atom:atom
+RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+RUN sudo apt-get install -y nodejs && npm install --global npm@6.2.0
