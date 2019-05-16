@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-LABEL maintainer="David Wilson <daviwil@github.com>"
+LABEL maintainer="Atom Team <atom@github.com>"
 LABEL description="An image to run Atom CI and release builds on Linux"
 
 ENV LANG="C.UTF-8" DISPLAY=":99"
