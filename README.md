@@ -1,3 +1,5 @@
+# :lock: Our CIs have these kinds of images built in and this is only a reference material if we need it later.
+
 # Atom Docker CI Images
 
 This repository contains a `Dockerfile` used to build images meant to be used
